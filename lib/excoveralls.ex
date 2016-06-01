@@ -24,10 +24,12 @@ defmodule ExCoveralls do
   @doc """
   This method will be called from mix to trigger coverage analysis.
   """
-  def start(compile_path, _opts) do
+  def start(compile_path, opts) do
+    opts = ConfServer.get ++ opts
+    IO.puts "XXX start opts = #{inspect opts}"
     Cover.compile(compile_path)
     fn() ->
-      execute(ConfServer.get, compile_path)
+      execute([umbrella: :true, sub_apps: [:subapp0, :subapp1]], compile_path)
     end
   end
 

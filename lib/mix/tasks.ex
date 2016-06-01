@@ -40,6 +40,8 @@ defmodule Mix.Tasks.Coveralls do
         options
       end
 
+    IO.puts "XXX mix coveralls opts = #{inspect options}"
+
     ExCoveralls.ConfServer.start
     ExCoveralls.ConfServer.set(options ++ [args: args])
     ExCoveralls.StatServer.start

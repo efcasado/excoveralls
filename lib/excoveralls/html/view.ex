@@ -15,8 +15,14 @@ defmodule ExCoveralls.Html.View do
     defp get_template_path() do
       options = ExCoveralls.Settings.get_coverage_options
       case Dict.fetch(options, "template_path") do
-        {:ok, path} -> path
-        _ -> Path.expand("excoveralls/lib/templates/html/htmlcov/", Mix.Project.deps_path())
+        {:ok, path} ->
+          IO.puts("XXX template path =#{path}")
+          path
+        _ ->
+          path0 = "#{Application.app_dir(:excoveralls)}.ez/#{Path.basename(Application.app_dir(:excoveralls))}/priv"
+          path = Path.expand("templates/html/htmlcov/", path0)
+        IO.puts("YYY template path =#{path}")
+        path
       end
     end
   end

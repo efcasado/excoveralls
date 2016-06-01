@@ -5,7 +5,7 @@ defmodule ExCoveralls.Settings do
 
   defmodule Files do
     @file_name "coveralls.json"
-    def default_file, do: "#{Path.dirname(__ENV__.file)}/../conf/#{@file_name}"
+    def default_file, do: "#{Application.app_dir(:excoveralls)}.ez/#{Path.basename(Application.app_dir(:excoveralls))}/priv/#{@file_name}"
     def custom_file,  do: "#{System.cwd}/#{@file_name}"
   end
 
@@ -35,16 +35,16 @@ defmodule ExCoveralls.Settings do
     end
   end
 
-
   defp read_config_file(file_name) do
-    if File.exists?(file_name) do
-      case File.read!(file_name) |> JSX.decode do
-        {:ok, config} -> Enum.into(config, HashDict.new)
-        _ -> raise "Failed to parse config file as JSON : #{file_name}"
+    IO.puts "XXX #{file_name}"
+    case :erl_prim_loader.get_file(to_char_list(file_name)) do
+      {:ok, bin, _file} ->
+        case bin |> JSX.decode do
+          {:ok, config} -> Enum.into(config, HashDict.new)
+          _ -> raise "Failed to parse config file as JSON : #{file_name}"
+        end
+      :error -> HashDict.new
       end
-    else
-      HashDict.new
-    end
   end
 
   @doc """
